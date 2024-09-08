@@ -1,5 +1,7 @@
 package com.example.demo.guess;
 
+import com.example.demo.user.User;
+import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -20,7 +21,8 @@ import org.hibernate.envers.Audited;
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
-public class Guess {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Guess extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -33,8 +35,9 @@ public class Guess {
 //    @Column
 //    private Game game
 
-//    @Column
-//    private User user
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column
     @NotNull
