@@ -1,5 +1,6 @@
 package com.example.demo.guess;
 
+import com.example.demo.game.Game;
 import com.example.demo.user.User;
 import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
@@ -32,8 +33,9 @@ public class Guess extends BaseEntity {
     @NotBlank
     private String guess;
 
-//    @Column
-//    private Game game
+    @ManyToOne
+    @JoinColumn
+    private Game game;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

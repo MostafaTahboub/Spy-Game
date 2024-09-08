@@ -40,7 +40,7 @@ public class Game extends BaseEntity {
 
     @OneToMany
     private List<Guess> guesses;
-
+    
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "USER_GAME_MAPPING", joinColumns = @JoinColumn(name = "game_id"),
     inverseJoinColumns = @JoinColumn(name = "user_id"))
