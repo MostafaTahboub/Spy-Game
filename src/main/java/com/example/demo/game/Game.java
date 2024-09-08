@@ -1,6 +1,7 @@
 package com.example.demo.game;
 
 import com.example.demo.guess.Guess;
+import com.example.demo.user.User;
 import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,4 +40,9 @@ public class Game extends BaseEntity {
 
     @OneToMany
     private List<Guess> guesses;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "USER_GAME_MAPPING", joinColumns = @JoinColumn(name = "game_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> users;
 }
