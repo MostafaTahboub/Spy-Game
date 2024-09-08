@@ -39,4 +39,5 @@ public class Game extends BaseEntity {
 
     @OneToMany
     private List<Guess> guesses;
+
 }

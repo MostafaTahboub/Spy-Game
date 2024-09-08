@@ -1,5 +1,6 @@
 package com.example.demo.user;
 
+import com.example.demo.game.Game;
 import com.example.demo.guess.Guess;
 import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
@@ -40,7 +41,7 @@ public class User extends BaseEntity {
 
     @Column
     @NotBlank
-    @Email(regexp = "[A-Za-z0-9_.-]+@gmail\\.com$", message = "Invalid E-mail format")
+    @Email(regexp = "[A-Za-z0-9_.-]+@gmail\\.com$")
     private String email;
 
     @Column
@@ -48,10 +49,17 @@ public class User extends BaseEntity {
     @Pattern(regexp = "^(?=.[a-z])(?=.[A-Z])(?=.[0-9])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8}$")
     private String password;
 
-    // many to many with Games Entity
-//    @ManyToMany
+
+     @ManyToMany
+     @JoinTable(
+             name = "USER_GAME_MAPPING",
+             joinColumns = @JoinColumn(name = "user_id"),
+             inverseJoinColumns = @JoinColumn(name = "game_id")
+     )
+     private List<Game> gameList;
 
      @OneToMany(fetch = FetchType.LAZY)
      private List<Guess> guessList;
+
 
 }
