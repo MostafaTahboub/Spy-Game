@@ -1,5 +1,7 @@
 package com.example.demo.user;
 
+import com.example.demo.guess.Guess;
+import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +17,8 @@ import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import java.util.List;
+
 @Entity
 @Setter
 @Getter
@@ -23,9 +27,8 @@ import org.hibernate.validator.constraints.UniqueElements;
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
-@AuditTable(value="AUD_User")
-
-public class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -48,6 +51,7 @@ public class User {
     // many to many with Games Entity
 //    @ManyToMany
 
-    // many to many with Guess Entity
+     @OneToMany(fetch = FetchType.LAZY)
+     private List<Guess> guessList;
 
 }
