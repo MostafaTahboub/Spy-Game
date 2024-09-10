@@ -44,10 +44,10 @@ public class Guess extends BaseEntity {
     @Column
     @NotNull
     @Pattern(regexp = "[0-4]")
-    private int right_in_right;
+    private int rightNumberInRightPlace;
 
     @Column
     @NotNull
     @Pattern(regexp = "[0-4]")
-    private int right_in_wrong;
+    private int rightNumberInLWrongPlace;
 }
