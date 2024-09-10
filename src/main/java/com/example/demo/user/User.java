@@ -61,5 +61,9 @@ public class User extends BaseEntity {
      @OneToMany(fetch = FetchType.LAZY)
      private List<Guess> guessList;
 
+     @Column
+     private UserStatus status;
 
+     @Column
+     private int tries;
 }
