@@ -4,6 +4,7 @@ import com.example.demo.guess.Guess;
 import com.example.demo.user.User;
 import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,7 @@ public class Game extends BaseEntity {
     private String id;
 
     @Column
+    @NotBlank
     private String password;
 
     @Column
@@ -45,4 +47,8 @@ public class Game extends BaseEntity {
     @JoinTable(name = "USER_GAME_MAPPING", joinColumns = @JoinColumn(name = "game_id"),
     inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users;
+
+    @Column
+    @NotBlank
+    private GameStatus status;
 }
