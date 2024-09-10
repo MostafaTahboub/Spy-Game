@@ -51,4 +51,7 @@ public class Game extends BaseEntity {
     @Column
     @NotBlank
     private GameStatus status;
+
+    @Column
+    private String winner_id;
 }
