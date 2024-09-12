@@ -23,6 +23,7 @@ public class UserMapper {
                 .name(dto.getUserName())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
+                .role(dto.getRole())
                 .build();
     }
     public static UserDTO entityToDTO(User entity) {
@@ -35,6 +36,7 @@ public class UserMapper {
                 .email(entity.getEmail())
                 .status(entity.getStatus())
                 .gameList(null)
+                .role(entity.getRole())
                 .build();
     }
     public static UserDTO entityToDTO(User entity, boolean withGames) {
@@ -46,6 +48,7 @@ public class UserMapper {
                 .password(entity.getPassword())
                 .email(entity.getEmail())
                 .status(entity.getStatus())
+                .role(entity.getRole())
                 //after create the game DTO
 //                .gameList(entity.getGameList().stream().map(temp->{
 //                    temp.setUsers(null);
