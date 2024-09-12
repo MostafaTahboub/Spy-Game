@@ -22,6 +22,6 @@ public class UserDTO {
     private String password;
     private UserStatus status;
     private List<GameDTO> gameList;
-
+    private UserRole role;
 
 }
