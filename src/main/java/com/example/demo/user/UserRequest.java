@@ -25,8 +25,7 @@ public class UserRequest {
             message = "Password must contain uppercase, lowercase, number and special character")
     private String password;
 
-//    @FutureOrPresent(message = "Date cannot be in the past")
-//    private LocalDate createdAt;
+
     
 
 }
