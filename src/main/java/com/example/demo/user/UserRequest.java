@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class UserRequest {
 
     @NotBlank(message = "Name cannot be blank")
-    private String name;
+    private String userName;
 
     @Email(regexp = "[A-Za-z0-9_.-]+@gmail\\.com$", message = "Invalid E-mail format")
     private String email;
