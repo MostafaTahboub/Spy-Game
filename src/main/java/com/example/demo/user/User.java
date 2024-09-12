@@ -6,15 +6,12 @@ import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jdk.jfr.Unsigned;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.UniqueElements;
 
@@ -24,7 +21,7 @@ import java.util.List;
 @Setter
 @Getter
 @SuperBuilder
-@Table(name = "users" )
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
@@ -50,20 +47,24 @@ public class User extends BaseEntity {
     private String password;
 
 
-     @ManyToMany
-     @JoinTable(
-             name = "USER_GAME_MAPPING",
-             joinColumns = @JoinColumn(name = "user_id"),
-             inverseJoinColumns = @JoinColumn(name = "game_id")
-     )
-     private List<Game> gameList;
+    @ManyToMany
+    @JoinTable(
+            name = "USER_GAME_MAPPING",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id")
+    )
+    private List<Game> gameList;
 
-     @OneToMany(fetch = FetchType.LAZY)
-     private List<Guess> guessList;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Guess> guessList;
 
-     @Column
-     private UserStatus status;
+    @Column
+    private UserStatus status;
 
-     @Column
-     private int tries;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    @Column
+    private int tries;
 }
