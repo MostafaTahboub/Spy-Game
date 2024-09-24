@@ -3,17 +3,12 @@ package com.example.demo.user;
 import com.example.demo.game.Game;
 import com.example.demo.guess.Guess;
 import com.example.demo.response.ApiResponse;
-import com.example.demo.security.AuthenticationResponse;
 import com.example.demo.security.CustomUserDetailsService;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.security.LoginRequest;
-import jakarta.validation.Valid;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RestController

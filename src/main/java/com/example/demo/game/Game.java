@@ -1,5 +1,6 @@
 package com.example.demo.game;
 
+import com.example.demo.chatgpt.ChatMessagse;
 import com.example.demo.guess.Guess;
 import com.example.demo.user.User;
 import com.example.demo.utilities.BaseEntity;
@@ -31,6 +32,8 @@ public class Game extends BaseEntity {
     private String id;
 
     @Column
+    private String chatID;
+    @Column
     @NotBlank
     private String password;
 
@@ -54,4 +57,7 @@ public class Game extends BaseEntity {
 
     @Column
     private String winner_id;
+
+    @OneToMany
+    private List<ChatMessagse> chatMessagses;
 }
