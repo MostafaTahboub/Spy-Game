@@ -14,14 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 public class ChatRequest {
     private String model;
-    private List<Message> messages;
-    private int n;
+    private List<Message> messages = new ArrayList<>();
     private double temperature;
 
-    public ChatRequest(String model, String prompt) {
+    public ChatRequest(String model) {
         this.model = model;
-        this.n = 10;
-        this.messages = new ArrayList<>();
-        this.messages.add(new Message("user", prompt));
+        this.messages.add(new Message("system", "start a new spy game so, pick a random four digits number and assign it to this id."));
+        this.temperature = 0.3;
+    }
+    public void addMessages(Message message) {
+        this.messages.add(message);
     }
 }

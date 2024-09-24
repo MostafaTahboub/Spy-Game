@@ -21,7 +21,7 @@ public class UserDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private UserStatus status;
-    private List<GameDTO> gameList;
+//    private List<GameDTO> gameList;
     private UserRole role;
 
 }

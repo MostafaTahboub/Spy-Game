@@ -35,7 +35,7 @@ public class UserMapper {
                 .password(entity.getPassword())
                 .email(entity.getEmail())
                 .status(entity.getStatus())
-                .gameList(null)
+//                .gameList(null)
                 .role(entity.getRole())
                 .build();
     }

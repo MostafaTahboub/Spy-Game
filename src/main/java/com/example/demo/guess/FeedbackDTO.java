@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FeedbackDTO {
 
-    int rightNumberInRightPlace;
-    int rightNumberInWrongPlace;
+    String rightNumberInRightPlace;
+    String rightNumberInWrongPlace;
 
 }
