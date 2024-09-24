@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Slf4j
 @RestController()
 public class GuessController {
@@ -21,9 +23,8 @@ public class GuessController {
         return new ApiResponse<>(response, HttpStatus.OK);
     }
     @PostMapping("/play")
-    public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String number){
-        String response = chatService.guessSecret(number);
-        log.info(response);
-        return new ApiResponse<>(AiMessageToFeedbackMapper.aiToFeedback(response), HttpStatus.OK);
+    public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String number, @RequestParam String gameId){
+        Optional<FeedbackDTO> response = Optional.ofNullable(chatService.guessSecret(number, gameId));
+        return response.map(feedbackDTO -> new ApiResponse<>(feedbackDTO, HttpStatus.OK)).orElseGet(() -> new ApiResponse<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }

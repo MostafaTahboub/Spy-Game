@@ -32,6 +32,8 @@ public class Game extends BaseEntity {
     private String id;
 
     @Column
+    private String chatID;
+    @Column
     @NotBlank
     private String password;
 
