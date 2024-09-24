@@ -16,6 +16,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Setter
@@ -27,13 +28,17 @@ import java.util.List;
 @Audited
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    private String id;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @Column(length = 36)
+    private String id = UUID.randomUUID().toString();
 
     @NotBlank
     @Column
-    @UniqueElements
+//    @UniqueElements
     private String name;
 
     @Column
@@ -43,7 +48,7 @@ public class User extends BaseEntity {
 
     @Column
     @NotBlank
-    @Pattern(regexp = "^(?=.[a-z])(?=.[A-Z])(?=.[0-9])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8}$")
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,}$")
     private String password;
 
 

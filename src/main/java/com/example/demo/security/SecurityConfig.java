@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -40,9 +42,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF (can be replaced with CSRF configuration if needed)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/users/login", "/users/register").permitAll()
+                                .requestMatchers("/users/login", "/users/signUp").permitAll()
 //                        .requestMatchers("/users/**").hasRole("USER")
 //                        .requestMatchers("/admin/**").hasRole("ADMIN")// Allow login and register without authentication
+//                                .requestMatchers("/users/**").hasRole("USER")
                                 .anyRequest().authenticated()// All other requests require authentication
                 )
                 .sessionManagement(session -> session

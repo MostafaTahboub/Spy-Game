@@ -1,4 +1,4 @@
-package com.example.demo.user;
+package com.example.demo.security;
 
 import lombok.Getter;
 import lombok.Setter;
