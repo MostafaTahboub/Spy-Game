@@ -1,7 +1,13 @@
 package com.example.demo.user;
 
+import com.example.demo.game.Game;
+import com.example.demo.guess.Guess;
 import lombok.Builder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 @Builder
 @Component
@@ -56,6 +62,21 @@ public class UserMapper {
 //                }).toList())
                 .build();
 
+    }
+
+    public static User requestToEntity(UserRequest request) {
+        if(request == null)
+            return null;
+        return User.builder()
+                .id(UUID.randomUUID().toString())
+                .name(request.getUserName())
+                .email(request.getEmail())
+                .password(new BCryptPasswordEncoder().encode(request.getPassword()))
+                .role(UserRole.PLAYER)
+                .status(UserStatus.IDLE)
+                .gameList(new ArrayList<Game>())
+                .guessList(new ArrayList<Guess>())
+                .build();
     }
 }
 

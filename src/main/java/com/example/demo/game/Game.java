@@ -59,5 +59,5 @@ public class Game extends BaseEntity {
     private String winner_id;
 
     @OneToMany
-    private List<ChatMessagse> chatMessagses;
+    private List<ChatMessagse> chatMessages;
 }
