@@ -64,6 +64,7 @@ public class User extends BaseEntity {
     private List<Guess> guessList;
 
     @Column
+//    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @Column

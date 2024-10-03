@@ -6,7 +6,6 @@ import com.example.demo.security.JwtUtil;
 import com.example.demo.security.LoginRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +38,6 @@ public class UserController {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtUtil = jwtUtil;
     }
-
     @GetMapping("/all")
     public ApiResponse<List<UserDTO>> getAllUsers() {
         List<UserDTO> userDTOList = userService.getAllUsers()
@@ -67,11 +65,19 @@ public class UserController {
 
     @PostMapping("/signUp")
     public ApiResponse<UserDTO> signUp(@Validated @RequestBody UserRequest userRequest) {
-        UserDTO userDTO = userService.createUser(userRequest);
-        if (userDTO == null) {
+
+        try {
+            UserDTO userDTO = userService.createUser(userRequest);
+            if (userDTO == null) {
+                return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ApiResponse<>(userDTO, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
             return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ApiResponse<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ApiResponse<>(userDTO, HttpStatus.CREATED);
+
     }
 
     @PostMapping("/login")
@@ -105,7 +111,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<UserDTO> updateUser( @RequestBody UserRequest userRequest,@PathVariable String id) {
+    public ApiResponse<UserDTO> updateUser(@RequestBody UserRequest userRequest, @PathVariable String id) {
         UserDTO userDTO = userService.putUser(userRequest, id);
         if (userDTO == null) {
             return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);

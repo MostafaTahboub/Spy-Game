@@ -19,8 +19,12 @@ public class UserService {
     }
 
     public UserDTO createUser(UserRequest userRequest) {
+        if (nameExist(userRequest.getUserName())) {
+            throw new IllegalArgumentException("User with this name already exists");
+        }
         User user = UserMapper.requestToEntity(userRequest);
         Optional<User> found = userRepository.findByName(userRequest.getUserName());
+
         if (found.isEmpty()) {
             userRepository.save(user);
             return UserMapper.entityToDTO(user);
@@ -51,5 +55,14 @@ public class UserService {
         } else
             return null;
 
+    }
+
+    private boolean nameExist(String name) {
+        return userRepository.findAll().stream()
+                .anyMatch(user -> user.getName().equals(name));
+    }
+
+    private boolean nameExist(String name, String id) {
+        return userRepository.findByNameAndIdNot(name, id).isPresent();
     }
 }
