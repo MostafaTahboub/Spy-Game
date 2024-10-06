@@ -127,6 +127,7 @@ public class UserController {
             return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
         }
         UserDTO userDTO = UserMapper.entityToDTO(user);
+
         return new ApiResponse<>(userDTO, HttpStatus.OK);
     }
 
