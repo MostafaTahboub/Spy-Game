@@ -6,33 +6,36 @@ import com.example.demo.user.User;
 import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Setter
 @Getter
 @SuperBuilder
-@Table(name = "guesses")
+@Table(name = "games")
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Game extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    private String id;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @Column(length = 36)
+    private String id = UUID.randomUUID().toString();
 
     @Column
     private String chatID;
+
     @Column
     @NotBlank
     private String password;
@@ -52,11 +55,12 @@ public class Game extends BaseEntity {
     private List<User> users;
 
     @Column
-    @NotBlank
+    @NotNull
+//    @Enumerated(EnumType.STRING)
     private GameStatus status;
 
     @Column
-    private String winner_id;
+    private String winnerId;
 
     @OneToMany
     private List<ChatMessagse> chatMessages;
