@@ -1,10 +1,12 @@
 package com.example.demo.game;
 
+import com.example.demo.user.User;
 import com.example.demo.user.UserMapper;
 import lombok.Builder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,6 +24,7 @@ public class GameMapper {
                 .startsAt(gameRequest.getStartsAt())
                 .endsAt(gameRequest.getStartsAt().plusMinutes(20))
                 .status(GameStatus.CREATED)
+                .users(new ArrayList<User>())
                 .build();
     }
 
@@ -35,6 +38,7 @@ public class GameMapper {
                 .status(game.getStatus())
                 .winnerId(game.getWinnerId())
                 .players(game.getUsers().stream().map(UserMapper::entityToDTO).collect(Collectors.toList()))
+                .chatId(game.getChatID())
                 .build();
 
     }

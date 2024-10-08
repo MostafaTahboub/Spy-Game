@@ -1,9 +1,11 @@
 package com.example.demo.game;
 
+import com.example.demo.chatgpt.ChatGameInfo;
 import com.example.demo.chatgpt.ChatService;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.example.demo.user.UserStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 @Service
 public class GameService {
     @Autowired
@@ -22,12 +24,24 @@ public class GameService {
 
     @Autowired
     private ChatService chatService;
+
     public GameDTO createGame(@Validated GameRequest gameRequest) {
         Game game = GameMapper.requestToEntity(gameRequest);
-        if (game == null)
+        if (game == null) {
             throw new IllegalArgumentException("Game Request is null");
+        }
+        ChatGameInfo chatGameInfo = chatService.startGame();
+        if (chatGameInfo == null) {
+            log.info("Failed to start game with ChatService");
+            throw new IllegalStateException("Failed to start game with ChatService");
+        }
+        log.info("chat Id : {}", chatGameInfo.getChatId());
+        log.info("secret : {}", chatGameInfo.getSecret());
 
+        game.setChatID(chatGameInfo.getChatId());
+//        game.secret(chatGameInfo.getSecret());
         gameRepository.save(game);
+
         return GameMapper.entityToDTO(game);
     }
 
@@ -52,7 +66,8 @@ public class GameService {
     }
 
     public String startGame(String gameId) {
-     return chatService.startGame();
+//     return chatService.startGame();
+        return null;
     }
 
     public GameDTO leaveGame(String gameId) {

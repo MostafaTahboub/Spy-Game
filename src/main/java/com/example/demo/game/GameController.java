@@ -23,8 +23,10 @@ public class GameController {
             log.info("Game created: {}", gameDTO);
             return new ApiResponse<>(gameDTO, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
+            log.info("Game creation failed: {}", e.getMessage());
             return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            log.info("Game creation failed sdds: {}", e.getMessage());
             return new ApiResponse<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -42,10 +44,12 @@ public class GameController {
 
 
     //for user and admin check using token
-    @PostMapping("/start")
-    public String startGame(@RequestParam String gameId) {
-        return gameService.startGame(gameId);
-    }
+//    @PostMapping("/start")
+//    public String startGame(@RequestParam String gameId) {
+//        return gameService.startGame(gameId);
+//    }
+
+
 
     //for player
     @PostMapping("/leave")

@@ -13,18 +13,19 @@ import java.util.Optional;
 
 @Slf4j
 @RestController()
+@RequestMapping("/guess")
 public class GuessController {
     @Autowired
     ChatService chatService;
     //the feedback should be returned
-    @PostMapping("/create")
-    public ApiResponse<String> makeAGuess(){
-        String response = chatService.startGame();
-        return new ApiResponse<>(response, HttpStatus.OK);
-    }
+//    @PostMapping("/create")
+//    public ApiResponse<String> makeAGuess(){
+//        String response = chatService.startGame();
+//        return new ApiResponse<>(response, HttpStatus.OK);
+//    }
     @PostMapping("/play")
-    public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String number, @RequestParam String gameId){
-        Optional<FeedbackDTO> response = Optional.ofNullable(chatService.guessSecret(number, gameId));
+    public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String number, @RequestParam String chatId){
+        Optional<FeedbackDTO> response = Optional.ofNullable(chatService.guessSecret(number, chatId));
         return response.map(feedbackDTO -> new ApiResponse<>(feedbackDTO, HttpStatus.OK)).orElseGet(() -> new ApiResponse<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }

@@ -27,5 +27,6 @@ public class GameDTO {
     private GameStatus status;
     private String winnerId;
     private List<UserDTO> players;
+    private String chatId;
 
 }
