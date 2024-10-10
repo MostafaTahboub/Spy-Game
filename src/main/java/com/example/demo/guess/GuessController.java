@@ -8,6 +8,7 @@ import com.example.demo.game.GameStatus;
 import com.example.demo.response.ApiResponse;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
+import com.example.demo.user.UserStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -80,6 +81,10 @@ public class GuessController {
             return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
         }
 
+        if (user.getStatus().equals(UserStatus.IDLE)) {
+            return new ApiResponse<>(null, HttpStatus.FORBIDDEN);
+        }
+
         if (game.getUsers().stream().noneMatch(u -> u.getId().equals(user.getId()))) {
             return new ApiResponse<>(null, HttpStatus.FORBIDDEN);
         }
@@ -97,6 +102,7 @@ public class GuessController {
         if (CorrectNumbersInCorrectPlace == 4) { // should added in join also to check if the game is finished or not
             game.setStatus(GameStatus.FINISHED); // and should add time validation on join
             game.setWinnerId(user.getId());
+            game.getUsers().forEach(u -> u.setStatus(UserStatus.IDLE));
             gameRepository.save(game);
         }
 

@@ -12,8 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
 @Slf4j
 @Service
 public class GameService {
@@ -51,15 +53,25 @@ public class GameService {
         if (game.isEmpty() || !game.get().getPassword().equals(password)) {
             return null;
         }
+        if (LocalDateTime.now().isAfter(game.get().getEndsAt())) {
+            return null;
+        }
+        if (LocalDateTime.now().isBefore(game.get().getStartsAt())) {
+            return null;
+        }
+        if (game.get().getStatus() == GameStatus.FINISHED) {
+            return null;
+        }
 
         game.get().setStatus(GameStatus.ON_GOING);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Optional<User> user = userRepository.findByName(username);
 
-        if (user.isEmpty() || isUserAlreadyInGame(game.get(), user.get())) {
+        if (user.isEmpty() || isUserAlreadyInGame(game.get(), user.get()) || user.get().getStatus() == UserStatus.IN_GAME) {
             return null;
         }
+        user.get().setStatus(UserStatus.IN_GAME);
 
         addUserToGame(game.get(), user.get());
         return GameMapper.entityToDTO(game.get());
@@ -73,6 +85,12 @@ public class GameService {
     public GameDTO leaveGame(String gameId) {
         Game gameFound = gameRepository.findById(gameId).orElse(null);
         if (gameFound == null) {
+            return null;
+        }
+        if (LocalDateTime.now().isAfter(gameFound.getEndsAt())) {
+            return null;
+        }
+        if (LocalDateTime.now().isBefore(gameFound.getStartsAt())) {
             return null;
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
