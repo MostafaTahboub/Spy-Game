@@ -37,6 +37,7 @@ public class GameMapper {
                 .endsAt(game.getEndsAt())
                 .status(game.getStatus())
                 .winnerId(game.getWinnerId())
+                .secret(game.getSecret())
                 .players(game.getUsers().stream().map(UserMapper::entityToDTO).collect(Collectors.toList()))
                 .chatId(game.getChatID())
                 .build();

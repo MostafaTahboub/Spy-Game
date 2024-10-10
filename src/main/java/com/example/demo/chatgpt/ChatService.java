@@ -1,5 +1,7 @@
 package com.example.demo.chatgpt;
 
+import com.example.demo.game.Game;
+import com.example.demo.game.GameRepository;
 import com.example.demo.guess.FeedbackDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +24,8 @@ public class ChatService {
     private RestTemplate restTemplate;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private GameRepository gameRepository;
 
     @Value("${openai.model}")
     private static String model;
@@ -94,9 +98,20 @@ public class ChatService {
         }
     }
 
-    public FeedbackDTO guessSecret(String guess, String chatId) {
+    public FeedbackDTO guessSecret(String guess, String gameId) {
         // create a request
-        String prompt = String.format("My Guess is: %1$s just give me the number of correct numbers in correct place and the correct numbers in the wrong place as just two integers without anything else separated by comma for the game id: %2$s", guess, chatId);
+        Game game = gameRepository.findById(gameId)
+                .orElse(null);
+        if (game == null) {
+            return null;
+        }
+        String Secret = game.getSecret();
+        log.info("Secret: {}", Secret);
+
+
+
+//        String prompt = String.format("My Guess is: %1$s just give me the number of correct numbers in correct place and the correct numbers in the wrong place as just two integers without anything else separated by comma for the game id: %2$s", guess, chatId);
+        String prompt = String.format("My guess is: %1$s. The secret is: %2$s. Compare them (by numbers and places )  and return the number of correct numbers in the right place and the number of correct numbers in the wrong place as just two integers separated by a comma without anything else.", guess, Secret);
         Message message = new Message("user", prompt);
         request.addMessages(message);
         // call the API

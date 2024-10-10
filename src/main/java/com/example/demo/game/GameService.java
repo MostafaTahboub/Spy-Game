@@ -39,7 +39,7 @@ public class GameService {
         log.info("secret : {}", chatGameInfo.getSecret());
 
         game.setChatID(chatGameInfo.getChatId());
-//        game.secret(chatGameInfo.getSecret());
+        game.setSecret(chatGameInfo.getSecret());
         gameRepository.save(game);
 
         return GameMapper.entityToDTO(game);
@@ -65,10 +65,10 @@ public class GameService {
         return GameMapper.entityToDTO(game.get());
     }
 
-    public String startGame(String gameId) {
-//     return chatService.startGame();
-        return null;
-    }
+//    public String startGame(String gameId) {
+////     return chatService.startGame();
+//        return null;
+//    }
 
     public GameDTO leaveGame(String gameId) {
         Game gameFound = gameRepository.findById(gameId).orElse(null);

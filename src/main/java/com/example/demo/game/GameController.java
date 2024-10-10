@@ -43,13 +43,6 @@ public class GameController {
     }
 
 
-    //for user and admin check using token
-//    @PostMapping("/start")
-//    public String startGame(@RequestParam String gameId) {
-//        return gameService.startGame(gameId);
-//    }
-
-
 
     //for player
     @PostMapping("/leave")
