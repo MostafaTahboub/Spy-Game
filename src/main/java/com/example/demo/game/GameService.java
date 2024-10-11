@@ -53,6 +53,9 @@ public class GameService {
         if (game.isEmpty() || !game.get().getPassword().equals(password)) {
             return null;
         }
+        log.info("start time : {}", game.get().getStartsAt());
+        log.info("end time : {}", game.get().getEndsAt());
+        log.info("current time : {}", LocalDateTime.now());
         if (LocalDateTime.now().isAfter(game.get().getEndsAt())) {
             return null;
         }
@@ -72,15 +75,11 @@ public class GameService {
             return null;
         }
         user.get().setStatus(UserStatus.IN_GAME);
-
+        user.get().setTries(5);
+        userRepository.save(user.get());
         addUserToGame(game.get(), user.get());
         return GameMapper.entityToDTO(game.get());
     }
-
-//    public String startGame(String gameId) {
-////     return chatService.startGame();
-//        return null;
-//    }
 
     public GameDTO leaveGame(String gameId) {
         Game gameFound = gameRepository.findById(gameId).orElse(null);

@@ -18,7 +18,6 @@ import java.util.Map;
 @Service
 public class ChatService {
 
-
     @Qualifier("openaiRestTemplate")
     @Autowired
     private RestTemplate restTemplate;
@@ -34,29 +33,6 @@ public class ChatService {
 
     @Value("${openai.api.url}")
     private String apiUrl;
-
-//    public ChatGameInfo startGame() {
-//        // create a request
-//        request.addMessages(new Message("system", "Create a new for digits secret to play spy game with you and return it mapped with unique id to be able to play more that one game at a time." +
-//                "only return the game id ***** and the secret with comma between them and nothing else"));
-//        // call the API
-//        ChatResponse response = restTemplate.postForObject(apiUrl, request, ChatResponse.class);
-//        if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
-//            return new ChatGameInfo(null,null);
-//        }
-//        Message assistant = new Message("assistant", response.getChoices().get(0).getMessage().getContent());
-//
-//        request.addMessages(assistant);
-//        String chatId = response.getChoices().get(0).getMessage().getContent().split(",")[0];
-//        String secret = response.getChoices().get(0).getMessage().getContent().split(",")[1];
-//
-//        log.info("chatId : {}", chatId);
-//        log.info("secret : {}", secret);
-//        //the game id received by AI
-////        log.info(response.getChoices().get(0).getMessage().getContent().split(",")[1]);
-//        log.info(response.getChoices().get(0).getMessage().getContent());
-//        return new ChatGameInfo(chatId, secret);
-//    }
 
     public ChatGameInfo startGame() {
         // Create a system message to instruct the AI
@@ -79,7 +55,8 @@ public class ChatService {
 
         // Parse the JSON response
         try {
-            Map<String, String> responseMap = objectMapper.readValue(content, new TypeReference<Map<String, String>>() {});
+            Map<String, String> responseMap = objectMapper.readValue(content, new TypeReference<Map<String, String>>() {
+            });
             String gameId = responseMap.get("gameId");
             String secret = responseMap.get("secret");
 
@@ -108,10 +85,7 @@ public class ChatService {
         String Secret = game.getSecret();
         log.info("Secret: {}", Secret);
 
-
-
-//        String prompt = String.format("My Guess is: %1$s just give me the number of correct numbers in correct place and the correct numbers in the wrong place as just two integers without anything else separated by comma for the game id: %2$s", guess, chatId);
-        String prompt = String.format("My guess is: %1$s. The secret is: %2$s. Compare them (by numbers and places )  and return the number of correct numbers in the right place and the number of correct numbers in the wrong place as just two integers separated by a comma without anything else.", guess, Secret);
+        String prompt = String.format("I am playing a number guessing game. My guess is: %1$s. The secret number is: %2$s. Please compare each digit of my guess with the secret number and return the result as two integers: the first integer is the count of digits that are correct and in the correct position, and the second integer is the count of digits that are correct but in the wrong position. Return only these two integers separated by a comma.", guess, Secret);
         Message message = new Message("user", prompt);
         request.addMessages(message);
         // call the API

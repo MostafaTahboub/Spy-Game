@@ -30,47 +30,6 @@ public class GuessController {
     @Autowired
     GameRepository gameRepository;
 
-    //the feedback should be returned
-//    @PostMapping("/create")
-//    public ApiResponse<String> makeAGuess(){
-//        String response = chatService.startGame();
-//        return new ApiResponse<>(response, HttpStatus.OK);
-//    }
-//    @PostMapping("/play")
-//    public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String number, @RequestParam String chatId) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//        User user = userRepository.findByName(username).orElse(null);
-//        Game game = gameRepository.findByChatID(chatId).orElse(null);
-//        if (game == null || user == null) {
-//            return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
-//        }
-//
-//        if (game.getUsers().stream().noneMatch(u -> u.getId().equals(user.getId()))) {
-//            return new ApiResponse<>(null, HttpStatus.FORBIDDEN);
-//        }
-//        Guess guess = Guess.builder()
-//                .guess(number)
-//                .game(game)
-//                .user(user)
-//                .build();
-//        game.getGuesses().add(guess);
-//        gameRepository.save(game);
-//        Optional<FeedbackDTO> response = Optional.ofNullable(chatService.guessSecret(number, chatId));
-//        int CorrectNumbersInCorrectPlace = response.get().getRightNumberInRightPlace();
-//        int CorrectNumbersInWrongPlace = response.get().getRightNumberInWrongPlace();
-//
-//        guess.setRightNumberInRightPlace(CorrectNumbersInCorrectPlace);
-//        guess.setRightNumberInLWrongPlace(CorrectNumbersInWrongPlace);
-////        guessRepository.save(guess);
-//
-//        if (CorrectNumbersInCorrectPlace == 4) { // should added in join also to check if the game is finished or not
-//            game.setStatus(GameStatus.FINISHED); // and should add time validation on join
-//            gameRepository.save(game);
-//        }
-//
-//        return response.map(feedbackDTO -> new ApiResponse<>(feedbackDTO, HttpStatus.OK)).orElseGet(() -> new ApiResponse<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
-//    }
     @PostMapping("/play")
     public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String number, @RequestParam String gameId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -88,6 +47,13 @@ public class GuessController {
         if (game.getUsers().stream().noneMatch(u -> u.getId().equals(user.getId()))) {
             return new ApiResponse<>(null, HttpStatus.FORBIDDEN);
         }
+
+        if (user.getTries() == 0) {
+            user.setStatus(UserStatus.IDLE);
+            userRepository.save(user);
+            return new ApiResponse<>(null, HttpStatus.FORBIDDEN);
+        }
+
 //        Guess guess = Guess.builder().guess(number).game(game).user(user).build();
 //        game.getGuesses().add(guess);
         gameRepository.save(game);
@@ -95,12 +61,15 @@ public class GuessController {
         int CorrectNumbersInCorrectPlace = response.get().getRightNumberInRightPlace();
         int CorrectNumbersInWrongPlace = response.get().getRightNumberInWrongPlace();
 
+        user.setTries(user.getTries() - 1);
+        userRepository.save(user);
+
 //        guess.setRightNumberInRightPlace(CorrectNumbersInCorrectPlace);
 //        guess.setRightNumberInLWrongPlace(CorrectNumbersInWrongPlace);
 //        guessRepository.save(guess);
 
-        if (CorrectNumbersInCorrectPlace == 4) { // should added in join also to check if the game is finished or not
-            game.setStatus(GameStatus.FINISHED); // and should add time validation on join
+        if (CorrectNumbersInCorrectPlace == 4) {
+            game.setStatus(GameStatus.FINISHED);
             game.setWinnerId(user.getId());
             game.getUsers().forEach(u -> u.setStatus(UserStatus.IDLE));
             gameRepository.save(game);
