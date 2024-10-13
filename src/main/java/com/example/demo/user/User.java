@@ -38,7 +38,6 @@ public class User extends BaseEntity {
 
     @NotBlank
     @Column
-//    @UniqueElements
     private String name;
 
     @Column
@@ -48,7 +47,6 @@ public class User extends BaseEntity {
 
     @Column
     @NotBlank
-//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,}$")
     private String password;
 
 
@@ -64,7 +62,7 @@ public class User extends BaseEntity {
     private List<Guess> guessList;
 
     @Column
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @Column

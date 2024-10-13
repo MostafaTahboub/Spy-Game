@@ -34,7 +34,7 @@ public class ChatService {
     @Value("${openai.api.url}")
     private String apiUrl;
 
-    public ChatGameInfo startGame() {
+    public ChatGameInfo createGame() {
         // Create a system message to instruct the AI
         request.addMessages(new Message("system", "You are an assistant designed to create new games for a spy game application. " +
                 "Generate a unique game ID and a secret number for the game. " +
@@ -50,10 +50,7 @@ public class ChatService {
         Message assistant = response.getChoices().get(0).getMessage();
         String content = assistant.getContent().trim();
 
-        // Log the raw AI response for debugging
         log.info("Raw AI Response: {}", content);
-
-        // Parse the JSON response
         try {
             Map<String, String> responseMap = objectMapper.readValue(content, new TypeReference<Map<String, String>>() {
             });

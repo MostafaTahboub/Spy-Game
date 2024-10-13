@@ -25,9 +25,6 @@ import java.util.UUID;
 @Audited
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Game extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.UUID)
-//    private String id;
 
     @Id
     @Column(length = 36)
@@ -59,8 +56,13 @@ public class Game extends BaseEntity {
 
     @Column
     @NotNull
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private GameStatus status;
+
+    @Column
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private GameType type;
 
     @Column
     private String winnerId;

@@ -32,7 +32,7 @@ public class GameService {
         if (game == null) {
             throw new IllegalArgumentException("Game Request is null");
         }
-        ChatGameInfo chatGameInfo = chatService.startGame();
+        ChatGameInfo chatGameInfo = chatService.createGame();
         if (chatGameInfo == null) {
             log.info("Failed to start game with ChatService");
             throw new IllegalStateException("Failed to start game with ChatService");
@@ -75,7 +75,7 @@ public class GameService {
             return null;
         }
         user.get().setStatus(UserStatus.IN_GAME);
-        user.get().setTries(5);
+        user.get().setTries(10);
         userRepository.save(user.get());
         addUserToGame(game.get(), user.get());
         return GameMapper.entityToDTO(game.get());

@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class GameRequest {
 
+    @NotNull
+    private GameType type;
+
     @NotBlank
     @NotNull
     private String password;

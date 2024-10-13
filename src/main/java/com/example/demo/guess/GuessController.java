@@ -31,7 +31,7 @@ public class GuessController {
     GameRepository gameRepository;
 
     @PostMapping("/play")
-    public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String number, @RequestParam String gameId) {
+    public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String guess, @RequestParam String gameId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userRepository.findByName(username).orElse(null);
@@ -57,7 +57,7 @@ public class GuessController {
 //        Guess guess = Guess.builder().guess(number).game(game).user(user).build();
 //        game.getGuesses().add(guess);
         gameRepository.save(game);
-        Optional<FeedbackDTO> response = Optional.ofNullable(chatService.guessSecret(number, gameId));
+        Optional<FeedbackDTO> response = Optional.ofNullable(chatService.guessSecret(guess, gameId));
         int CorrectNumbersInCorrectPlace = response.get().getRightNumberInRightPlace();
         int CorrectNumbersInWrongPlace = response.get().getRightNumberInWrongPlace();
 

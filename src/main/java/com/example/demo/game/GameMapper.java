@@ -25,6 +25,7 @@ public class GameMapper {
                 .endsAt(gameRequest.getStartsAt().plusMinutes(20))
                 .status(GameStatus.CREATED)
                 .users(new ArrayList<User>())
+                .type(gameRequest.getType())
                 .build();
     }
 
@@ -38,6 +39,7 @@ public class GameMapper {
                 .status(game.getStatus())
                 .winnerId(game.getWinnerId())
                 .secret(game.getSecret())
+                .type(game.getType())
                 .players(game.getUsers().stream().map(UserMapper::entityToDTO).collect(Collectors.toList()))
                 .chatId(game.getChatID())
                 .build();
