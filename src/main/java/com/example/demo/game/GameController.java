@@ -4,6 +4,7 @@ import com.example.demo.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ public class GameController {
     private GameService gameService;
 
     //for user and admin
+    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @PostMapping("/create")
     public ApiResponse<GameDTO> createGame(@Validated @RequestBody GameRequest gameRequest) {
         try {
@@ -31,7 +33,7 @@ public class GameController {
         }
     }
 
-    //for user and admin
+    @PreAuthorize("hasRole('PLAYER')")
     @PostMapping("/join")
     public ApiResponse<GameDTO> joinGame(@RequestParam String gameId , @RequestParam String password) {
         GameDTO gameDTO = gameService.joinGame(gameId, password);
@@ -45,6 +47,7 @@ public class GameController {
 
 
     //for player
+    @PreAuthorize("hasRole('PLAYER')")
     @PostMapping("/leave")
     public ApiResponse<GameDTO> leaveGame(@PathVariable String gameId) {
         GameDTO gameDTO = gameService.leaveGame(gameId);
@@ -56,6 +59,7 @@ public class GameController {
     }
 
     //for admin
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<GameDTO> deleteGame(@PathVariable String id) {
         GameDTO gameDTO = gameService.deleteGame(id);
@@ -66,6 +70,7 @@ public class GameController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @GetMapping("/{id}")
     public ApiResponse<GameDTO> getGame(@PathVariable String id) {
         GameDTO gameDTO = gameService.getGame(id);

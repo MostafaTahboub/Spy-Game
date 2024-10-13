@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.example.demo.chatgpt.ChatService.request;
+
 @Slf4j
 @RestController
 @RequestMapping("/users")
@@ -38,6 +40,8 @@ public class UserController {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtUtil = jwtUtil;
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @GetMapping("/all")
     public ApiResponse<List<UserDTO>> getAllUsers() {
         List<UserDTO> userDTOList = userService.getAllUsers()
@@ -52,6 +56,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @GetMapping("/{id}")
     public ApiResponse<UserDTO> getUserById(@PathVariable String id) {
         UserDTO userDTO = userService.findById(id)
@@ -62,6 +67,7 @@ public class UserController {
         }
         return new ApiResponse<>(userDTO, HttpStatus.OK);
     }
+
 
     @PostMapping("/signUp")
     public ApiResponse<UserDTO> signUp(@Validated @RequestBody UserRequest userRequest) {
@@ -96,20 +102,28 @@ public class UserController {
             throw new Exception("Incorrect username or password", e);
         }
 
+        String existingToken = jwtUtil.getTokenFromCache(username); // Implement this method to fetch existing token from cache or storage
+        if (existingToken != null && jwtUtil.validateToken(existingToken, username)) {
+            log.info("User {} already has a valid token. Returning existing token.", username);
+            String response = "jwtToken: " + existingToken;
+            return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
+        }
+
         final UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
         String response = "jwtToken: " + jwt;
         log.info("Generated JWT token for user: {}", username);
-
+        jwtUtil.storeTokenInCache(username, jwt);
         return new ApiResponse<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/test")
     public String test() {
         return "Hello World!";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @PutMapping("/{id}")
     public ApiResponse<UserDTO> updateUser(@RequestBody UserRequest userRequest, @PathVariable String id) {
         UserDTO userDTO = userService.putUser(userRequest, id);
@@ -120,6 +134,7 @@ public class UserController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<UserDTO> deleteUser(@PathVariable String id) {
         User user = userService.deleteUser(id);
@@ -131,6 +146,7 @@ public class UserController {
         return new ApiResponse<>(userDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @GetMapping("/bestTalentedUsers")
     public ApiResponse<List<UserDTO>> getBestTalentedUsers() {
         return null;
