@@ -5,14 +5,14 @@ import com.example.demo.user.User;
 import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.envers.Audited;
+
+import java.util.UUID;
 
 @Entity
 @Setter
@@ -25,11 +25,10 @@ import org.hibernate.envers.Audited;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Guess extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @Column(length = 36)
+    private String id = UUID.randomUUID().toString();
 
     @Column
-    @Pattern(regexp = "[0-9]{4}")
     @NotBlank
     private String guess;
 
@@ -42,12 +41,8 @@ public class Guess extends BaseEntity {
     private User user;
 
     @Column
-    @NotNull
-    @Pattern(regexp = "[0-4]")
     private int rightNumberInRightPlace;
 
     @Column
-    @NotNull
-    @Pattern(regexp = "[0-4]")
     private int rightNumberInLWrongPlace;
 }

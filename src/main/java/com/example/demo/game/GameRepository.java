@@ -10,5 +10,4 @@ import java.util.Optional;
 public interface GameRepository extends JpaRepository<Game, String> {
     @NonNull
     Optional<Game> findById(String id);
-    Game findByType(GameType type);
 }
