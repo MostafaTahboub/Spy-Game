@@ -48,9 +48,9 @@ public class GameController {
 
     //for player
     @PreAuthorize("hasRole('PLAYER')")
-    @PostMapping("/leave")
-    public ApiResponse<GameDTO> leaveGame(@PathVariable String gameId) {
-        GameDTO gameDTO = gameService.leaveGame(gameId);
+    @PostMapping("/leave/{id}")
+    public ApiResponse<GameDTO> leaveGame(@PathVariable String id) {
+        GameDTO gameDTO = gameService.leaveGame(id);
         if (gameDTO == null) {
             return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
         } else {
@@ -80,4 +80,15 @@ public class GameController {
             return new ApiResponse<>(gameDTO, HttpStatus.OK);
         }
     }
+
+//    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
+//    @GetMapping("/playWithAi")
+//    public ApiResponse<GameDTO> playWithAi() {
+//        GameDTO gameDTO = gameService.playWithAi(gameId);
+//        if (gameDTO == null) {
+//            return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
+//        } else {
+//            return new ApiResponse<>(gameDTO, HttpStatus.OK);
+//        }
+//    }
 }

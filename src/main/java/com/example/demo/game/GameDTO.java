@@ -26,7 +26,7 @@ public class GameDTO {
     private LocalDateTime endsAt;
     private GameStatus status;
     private String winnerId;
-    private GameType type;
+    private GameMode mode;
     private List<UserDTO> players;
     private String chatId;
 

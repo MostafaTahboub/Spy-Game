@@ -6,15 +6,12 @@ import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.envers.Audited;
-import org.hibernate.validator.constraints.UniqueElements;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -28,9 +25,6 @@ import java.util.UUID;
 @Audited
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.UUID)
-//    private String id;
 
     @Id
     @Column(length = 36)
@@ -71,4 +65,10 @@ public class User extends BaseEntity {
 
     @Column
     private int tries;
+
+    @Column
+    private int hints;
+
+    @Column
+    private int score;
 }

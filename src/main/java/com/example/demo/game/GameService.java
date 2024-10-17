@@ -29,10 +29,16 @@ public class GameService {
 
     public GameDTO createGame(@Validated GameRequest gameRequest) {
         Game game = GameMapper.requestToEntity(gameRequest);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = userRepository.findByName(username);
+        if (user.isEmpty() || user.get().getStatus() == UserStatus.IN_GAME) {
+            return null;
+        }
         if (game == null) {
             throw new IllegalArgumentException("Game Request is null");
         }
-        ChatGameInfo chatGameInfo = chatService.createGame();
+        ChatGameInfo chatGameInfo = chatService.createGame(game.getMode(), user.get());
         if (chatGameInfo == null) {
             log.info("Failed to start game with ChatService");
             throw new IllegalStateException("Failed to start game with ChatService");
@@ -50,9 +56,17 @@ public class GameService {
 
     public GameDTO joinGame(String gameId, String password) {
         Optional<Game> game = gameRepository.findById(gameId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = userRepository.findByName(username);
         if (game.isEmpty() || !game.get().getPassword().equals(password)) {
             return null;
         }
+
+        if (game.get().getMode() == GameMode.EXTREME && user.get().getScore() < 50) {
+            throw new IllegalArgumentException("User does not have enough score to play extreme mode.");
+        }
+
         log.info("start time : {}", game.get().getStartsAt());
         log.info("end time : {}", game.get().getEndsAt());
         log.info("current time : {}", LocalDateTime.now());
@@ -67,15 +81,13 @@ public class GameService {
         }
 
         game.get().setStatus(GameStatus.ON_GOING);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        Optional<User> user = userRepository.findByName(username);
 
         if (user.isEmpty() || isUserAlreadyInGame(game.get(), user.get()) || user.get().getStatus() == UserStatus.IN_GAME) {
             return null;
         }
         user.get().setStatus(UserStatus.IN_GAME);
         user.get().setTries(10);
+        user.get().setHints(0);
         userRepository.save(user.get());
         addUserToGame(game.get(), user.get());
         return GameMapper.entityToDTO(game.get());
@@ -99,6 +111,7 @@ public class GameService {
                 .noneMatch(game -> game.getId().equals(gameId))) {
             return null;
         }
+        user.get().setScore(user.get().getScore() - 5);
         user.get().setStatus(UserStatus.IDLE);
         userRepository.save(user.get());
         gameFound.getUsers().remove(user.get());

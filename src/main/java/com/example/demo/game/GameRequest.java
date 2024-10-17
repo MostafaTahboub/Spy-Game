@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class GameRequest {
 
     @NotNull
-    private GameType type;
+    private GameMode mode;
 
     @NotBlank
     @NotNull

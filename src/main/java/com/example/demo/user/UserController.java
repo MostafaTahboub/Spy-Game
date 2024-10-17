@@ -1,23 +1,15 @@
 package com.example.demo.user;
 
 import com.example.demo.response.ApiResponse;
-import com.example.demo.security.CustomUserDetailsService;
-import com.example.demo.security.JwtUtil;
 import com.example.demo.security.LoginRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.example.demo.chatgpt.ChatService.request;
 
 @Slf4j
 @RestController
@@ -25,21 +17,7 @@ import static com.example.demo.chatgpt.ChatService.request;
 public class UserController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
     private UserService userService;
-
-    public UserController(AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService, JwtUtil jwtUtil) {
-        this.authenticationManager = authenticationManager;
-        this.customUserDetailsService = customUserDetailsService;
-        this.jwtUtil = jwtUtil;
-    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @GetMapping("/all")
@@ -71,7 +49,6 @@ public class UserController {
 
     @PostMapping("/signUp")
     public ApiResponse<UserDTO> signUp(@Validated @RequestBody UserRequest userRequest) {
-
         try {
             UserDTO userDTO = userService.createUser(userRequest);
             if (userDTO == null) {
@@ -88,39 +65,11 @@ public class UserController {
 
     @PostMapping("/login")
     public ApiResponse<String> login(@RequestBody LoginRequest loginRequest) throws Exception {
-        String username = loginRequest.getUsername();
-        User user = userRepository.findByName(username).orElseThrow(() -> new Exception("User not found"));
-        log.info("Attempting to authenticate user: {}", user.getName());
-
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, loginRequest.getPassword())
-            );
-            log.info("User {} authenticated successfully", username);
-        } catch (BadCredentialsException e) {
-            log.error("Authentication failed for user: {} - Incorrect username or password", username);
-            throw new Exception("Incorrect username or password", e);
+        String response = userService.login(loginRequest);
+        if (response == null) {
+            return new ApiResponse<>(null, HttpStatus.FORBIDDEN);
         }
-
-        String existingToken = jwtUtil.getTokenFromCache(username); // Implement this method to fetch existing token from cache or storage
-        if (existingToken != null && jwtUtil.validateToken(existingToken, username)) {
-            log.info("User {} already has a valid token. Returning existing token.", username);
-            String response = "jwtToken: " + existingToken;
-            return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
-        }
-
-        final UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-        final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-        String response = "jwtToken: " + jwt;
-        log.info("Generated JWT token for user: {}", username);
-        jwtUtil.storeTokenInCache(username, jwt);
         return new ApiResponse<>(response, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/test")
-    public String test() {
-        return "Hello World!";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
@@ -147,9 +96,10 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
-    @GetMapping("/bestTalentedUsers")
-    public ApiResponse<List<UserDTO>> getBestTalentedUsers() {
-        return null;
+    @GetMapping("/leaderboard")
+    public ApiResponse<List<LeaderboardEntryDTO>> getLeaderboard() {
+        List<LeaderboardEntryDTO> leaderboard = userService.getLeaderboard();
+        return new ApiResponse<>(leaderboard, HttpStatus.OK);
     }
 
 

@@ -62,7 +62,7 @@ public class Game extends BaseEntity {
     @Column
     @NotNull
     @Enumerated(EnumType.STRING)
-    private GameType type;
+    private GameMode mode;
 
     @Column
     private String winnerId;
