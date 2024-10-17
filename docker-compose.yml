@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  db1:
+    image: postgres:alpine
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=tomato
+      - POSTGRES_PASSWORD=moha
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/data/postgres
+
+
+  app:
+    depends_on:
+      - db1
+    build: ../interns2024
+    restart: on-failure
+    environment:
+      spring.datasource.url  : jdbc:postgresql://db1:5432/tomato
+      spring.datasource.username : postgres
+      spring.datasource.password : moha
+      spring.jpa.properties.hibernate.dialect : org.hibernate.dialect.PostgreSQLDialect
+      spring.jpa.hibernate.ddl-auto : update
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+    container_name: application
+    ports:
+      - "8080:8080"
+volumes:
+  postgres:
