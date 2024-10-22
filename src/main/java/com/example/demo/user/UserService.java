@@ -5,6 +5,8 @@ import com.example.demo.security.JwtUtil;
 import com.example.demo.security.LoginRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -79,6 +81,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    @CachePut(value = "users", key = "#id")
     public UserDTO putUser(UserRequest userRequest, String id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
@@ -94,6 +97,7 @@ public class UserService {
         return userRepository.findTopPlayers();
     }
 
+    @CacheEvict(value = "users", key = "#id")
     public User deleteUser(String id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {

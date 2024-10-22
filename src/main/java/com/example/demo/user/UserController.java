@@ -2,8 +2,10 @@ package com.example.demo.user;
 
 import com.example.demo.response.ApiResponse;
 import com.example.demo.security.LoginRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +37,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
+    @Operation(summary = "Get user by id")
     @GetMapping("/{id}")
     public ApiResponse<UserDTO> getUserById(@PathVariable String id) {
         UserDTO userDTO = userService.findById(id)
@@ -47,6 +50,7 @@ public class UserController {
     }
 
 
+    @Operation(summary = "Register a new user")
     @PostMapping("/signUp")
     public ApiResponse<UserDTO> signUp(@Validated @RequestBody UserRequest userRequest) {
         try {
@@ -63,6 +67,7 @@ public class UserController {
 
     }
 
+    @Operation(summary = "Login")
     @PostMapping("/login")
     public ApiResponse<String> login(@RequestBody LoginRequest loginRequest) throws Exception {
         String response = userService.login(loginRequest);
@@ -72,6 +77,7 @@ public class UserController {
         return new ApiResponse<>(response, HttpStatus.OK);
     }
 
+    @Operation(summary = "Update user")
     @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @PutMapping("/{id}")
     public ApiResponse<UserDTO> updateUser(@RequestBody UserRequest userRequest, @PathVariable String id) {
@@ -83,6 +89,7 @@ public class UserController {
 
     }
 
+    @Operation(summary = "Delete user")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<UserDTO> deleteUser(@PathVariable String id) {
@@ -95,6 +102,7 @@ public class UserController {
         return new ApiResponse<>(userDTO, HttpStatus.OK);
     }
 
+    @Operation(summary = "Get leaderboard")
     @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @GetMapping("/leaderboard")
     public ApiResponse<List<LeaderboardEntryDTO>> getLeaderboard() {

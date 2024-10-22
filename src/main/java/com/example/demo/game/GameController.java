@@ -1,12 +1,15 @@
 package com.example.demo.game;
 
 import com.example.demo.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -17,6 +20,7 @@ public class GameController {
     private GameService gameService;
 
     //for user and admin
+    @Operation(summary = "Create a new game")
     @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @PostMapping("/create")
     public ApiResponse<GameDTO> createGame(@Validated @RequestBody GameRequest gameRequest) {
@@ -33,9 +37,11 @@ public class GameController {
         }
     }
 
+
+    @Operation(summary = "Join a game")
     @PreAuthorize("hasRole('PLAYER')")
     @PostMapping("/join")
-    public ApiResponse<GameDTO> joinGame(@RequestParam String gameId , @RequestParam String password) {
+    public ApiResponse<GameDTO> joinGame(@RequestParam String gameId, @RequestParam String password) {
         GameDTO gameDTO = gameService.joinGame(gameId, password);
         if (gameDTO == null) {
             return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
@@ -45,7 +51,7 @@ public class GameController {
     }
 
 
-
+    @Operation(summary = "Leave a game ")
     //for player
     @PreAuthorize("hasRole('PLAYER')")
     @PostMapping("/leave/{id}")
@@ -59,6 +65,7 @@ public class GameController {
     }
 
     //for admin
+    @Operation(summary = "Delete a game")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<GameDTO> deleteGame(@PathVariable String id) {
@@ -70,6 +77,7 @@ public class GameController {
         }
     }
 
+    @Operation(summary = "Get a game")
     @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
     @GetMapping("/{id}")
     public ApiResponse<GameDTO> getGame(@PathVariable String id) {
@@ -81,14 +89,16 @@ public class GameController {
         }
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
-//    @GetMapping("/playWithAi")
-//    public ApiResponse<GameDTO> playWithAi() {
-//        GameDTO gameDTO = gameService.playWithAi(gameId);
-//        if (gameDTO == null) {
-//            return new ApiResponse<>(null, HttpStatus.BAD_REQUEST);
-//        } else {
-//            return new ApiResponse<>(gameDTO, HttpStatus.OK);
-//        }
-//    }
+    @Operation(summary = "Get all available games by mode")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PLAYER')")
+    @GetMapping("/availableGamesByMode")
+    public ApiResponse<List<GameDTO>> getAllAvailableGamesByMode(@RequestParam GameMode mode) {
+        List<GameDTO> availableGames = gameService.getAvailableGamesByMode(mode);
+        if (availableGames.isEmpty()) {
+            return new ApiResponse<>(null, HttpStatus.NO_CONTENT);
+        } else {
+            return new ApiResponse<>(availableGames, HttpStatus.OK);
+        }
+    }
+
 }
