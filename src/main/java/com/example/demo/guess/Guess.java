@@ -5,6 +5,7 @@ import com.example.demo.user.User;
 import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,10 @@ import java.util.UUID;
 @Setter
 @Getter
 @SuperBuilder
-@Table(name = "guesses")
+@Table(name = "guesses" ,indexes = {
+        @Index(name = "idx_guess_game_id", columnList = "game_id"),
+        @Index(name="idx_guess_user_id", columnList = "user_id")
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
@@ -30,6 +34,7 @@ public class Guess extends BaseEntity {
 
     @Column
     @NotBlank
+//    @Pattern(regexp = "([0-9]{4}|[0-9]{6})")
     private String guess;
 
     @ManyToOne

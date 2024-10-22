@@ -19,7 +19,10 @@ import java.util.UUID;
 @Setter
 @Getter
 @SuperBuilder
-@Table(name = "users")
+@Table(name = "users" ,indexes = {
+        @Index(name = "idx_user_name", columnList = "name"),
+        @Index(name="idx_user_status", columnList = "status")
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited

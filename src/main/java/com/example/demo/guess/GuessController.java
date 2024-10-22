@@ -4,6 +4,7 @@ package com.example.demo.guess;
 import com.example.demo.chatgpt.ChatService;
 import com.example.demo.game.HintType;
 import com.example.demo.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class GuessController {
     @Autowired
     GuessService guessService;
 
+    @Operation(summary = "Make a guess")
     @PreAuthorize("hasRole('PLAYER')")
     @PostMapping("/play")
     public ApiResponse<FeedbackDTO> makeAGuess(@RequestBody String guess, @RequestParam String gameId) {
@@ -35,6 +37,7 @@ public class GuessController {
         }
     }
 
+    @Operation(summary = "Use a hint")
     @PreAuthorize("hasRole('PLAYER')")
     @GetMapping("/hint")
     public ApiResponse<String> useHint(@RequestParam String gameId, @RequestParam HintType hintType) {

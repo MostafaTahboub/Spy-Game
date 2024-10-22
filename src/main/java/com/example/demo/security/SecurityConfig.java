@@ -42,11 +42,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF (can be replaced with CSRF configuration if needed)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/users/login", "/users/signUp").permitAll()
-//                        .requestMatchers("/users/**").hasRole("USER")
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")// Allow login and register without authentication
-//                                .requestMatchers("/users/**").hasRole("USER")
-                                .anyRequest().authenticated()// All other requests require authentication
+                                .requestMatchers("/users/login", "/users/signUp","/","v3/api-docs").permitAll()
+                              .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // No session management (JWT used for stateless authentication)

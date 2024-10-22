@@ -7,7 +7,10 @@ import com.example.demo.utilities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.envers.Audited;
 
@@ -19,7 +22,10 @@ import java.util.UUID;
 @Setter
 @Getter
 @SuperBuilder
-@Table(name = "games")
+@Table(name = "games", indexes = {
+        @Index(name = "idx_game_mode", columnList = "mode"),
+        @Index(name = "idx_game_status", columnList = "status"),
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
@@ -48,10 +54,10 @@ public class Game extends BaseEntity {
 
     @OneToMany
     private List<Guess> guesses;
-    
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "USER_GAME_MAPPING", joinColumns = @JoinColumn(name = "game_id"),
-    inverseJoinColumns = @JoinColumn(name = "user_id"))
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users;
 
     @Column

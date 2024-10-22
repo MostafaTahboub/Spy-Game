@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -126,6 +127,18 @@ public class GameService {
         }
         gameRepository.deleteById(id);
         return GameMapper.entityToDTO(game);
+    }
+
+    public List<GameDTO> getAvailableGamesByMode(GameMode mode) {
+        LocalDateTime now = LocalDateTime.now();
+        return gameRepository.findByModeAndStatusInAndStartsAtBeforeAndEndsAtAfter(
+                        mode,
+                        List.of(GameStatus.CREATED, GameStatus.ON_GOING),
+                        now,
+                        now)
+                .stream()
+                .map(GameMapper::entityToDTO)
+                .collect(Collectors.toList());
     }
 
 

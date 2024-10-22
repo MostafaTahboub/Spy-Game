@@ -40,7 +40,7 @@ public class UserMapper {
                 .status(UserStatus.IDLE)
                 .gameList(new ArrayList<Game>())
                 .guessList(new ArrayList<Guess>())
-                .score(0)
+                .score(15)
                 .build();
     }
 }
