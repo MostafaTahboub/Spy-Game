@@ -46,7 +46,8 @@ Welcome to the Guessing Game API! This is a backend service for a number guessin
 - **Springdoc OpenAPI**: Auto-generated Swagger documentation.
 - **OpenAI API**: AI-powered game interactions.
 - **Docker**: Containerization for running services.
-
+- **AWS EC2**: Hosting the application on a virtual machine.
+- **AWS ECR**: Storing Docker images.
 ---
 
 ## **Setup and Installation**
